@@ -1,5 +1,7 @@
 package com.umitishere.socialmedia.auth.controller;
 
+import com.umitishere.socialmedia.auth.dto.LoginRequestDto;
+import com.umitishere.socialmedia.auth.dto.RegisterRequestDto;
 import com.umitishere.socialmedia.auth.service.AuthService;
 import com.umitishere.socialmedia.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +18,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public void login() {
-        authService.login();
+    public boolean login(@RequestBody LoginRequestDto loginRequestDto) {
+        return authService.login(loginRequestDto);
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody UserEntity user) {
-        authService.register(user);
+    public void register(@RequestBody RegisterRequestDto registerRequestDto) {
+        authService.register(registerRequestDto);
     }
 
 }

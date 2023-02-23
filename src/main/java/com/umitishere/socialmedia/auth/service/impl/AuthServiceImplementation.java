@@ -1,5 +1,7 @@
 package com.umitishere.socialmedia.auth.service.impl;
 
+import com.umitishere.socialmedia.auth.dto.LoginRequestDto;
+import com.umitishere.socialmedia.auth.dto.RegisterRequestDto;
 import com.umitishere.socialmedia.auth.service.AuthService;
 import com.umitishere.socialmedia.user.entity.UserEntity;
 import com.umitishere.socialmedia.user.repository.UserRepository;
@@ -22,14 +24,25 @@ public class AuthServiceImplementation implements AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void login() {
+    public boolean login(LoginRequestDto loginRequestDto) {
+        String loginEmail = loginRequestDto.getEmail();
+        String loginPassword = loginRequestDto.getPassword();
 
+        Optional<UserEntity> user = userRepository.findByEmail(loginEmail);
+
+        if (user.isEmpty()) {
+            throw EMAIL_NOT_EXIST.instance();
+        } else if (!passwordEncoder.matches(loginPassword, user.get().getPassword())) {
+            throw INVALID_USERNAME_OR_PASSWORD.instance();
+        } else {
+            return true;
+        }
     }
 
     @Override
-    public void register(UserEntity user) {
-        String registerEmail = user.getEmail();
-        String registerPassword = user.getPassword();
+    public void register(RegisterRequestDto registerRequestDto) {
+        String registerEmail = registerRequestDto.getEmail();
+        String registerPassword = registerRequestDto.getPassword();
 
         Optional<UserEntity> optionalUser = userRepository.findByEmail(registerEmail);
 
